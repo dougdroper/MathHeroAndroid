@@ -3,7 +3,11 @@
   padding: 5px;
   position: absolute;
   top: 10px;
-  margin-left: 110px;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  width: 110px;
 }
 
 #answer_box{
@@ -20,4 +24,19 @@
 #left_term{
   float: left;
   font-size: 38px;
+}
+
+#right_term{
+  width: 45px;
+  text-align: center;
+}
+
+#left_term{
+  text-align: center;
+  width: 45px;
+}
+
+#operation{
+  width: 20px;
+  text-align: center;
 }
