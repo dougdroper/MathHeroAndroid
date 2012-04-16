@@ -6,30 +6,27 @@
         <title>
         </title>
         <link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.css" />
+        <link rel="stylesheet" href="style.css" />
         <style>
             /* App custom styles */
         </style>
         <script type="text/javascript" charset="utf-8" src="cordova-1.6.0.js"></script>
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js">
-        </script>
-        <script src="http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.js">
-        </script>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+        <script src="http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.js"></script>
+        <script type="text/javascript" charset="utf-8" src="math_hero.js"></script>
     </head>
     <body>
         <div data-role="page" id="page1">
             <div data-theme="a" data-role="header">
-                <h3>
-                    Math Hero
-                </h3>
-                <a data-role="button" data-transition="fade" href="#page1">
-                    New Game
-                </a>
+                <h3>Math Hero</h3>
+                <a data-role="button" data-transition="fade" href="#page1" id="start_button">New Game</a>
+                <a data-role="button" data-transition="fade" href="#page1" id="pause_button">Pause</a>
             </div>
             <div data-role="content">
+                <div id="calc_box"></div>
             </div>
         </div>
         <script>
-            //App custom javascript
         </script>
     </body>
 </html>
