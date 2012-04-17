@@ -10,15 +10,6 @@
   width: 110px;
 }
 
-#answer_box{
-  text-align: center;
-  position: absolute;
-  bottom: 20px;
-  border-top: 2px solid #000;
-  border-bottom: 2px solid #000;
-  margin-left: 90px;
-}
-
 #right_term,
 #operation,
 #left_term{
@@ -39,4 +30,35 @@
 #operation{
   width: 20px;
   text-align: center;
+}
+
+.answers{
+  width: 440px;
+  margin: 0 auto;
+  position: absolute;
+  bottom: 40px;
+  left: 0;
+  right: 0;
+} 
+
+#answer_1,
+#answer_2,
+#answer_3,
+#answer_4{
+  float: left;
+  background-color: #59e;
+  width: 100px;
+  height: 50px;
+  text-align: center;
+  font-size: 38px;
+  border-radius: 5px;
+  margin-right: 10px;
+}
+
+#dead_line{
+  width: 100%;
+  height: 2px;
+  border-top: 2px solid red;
+  position: absolute;
+  bottom: 120px;
 }

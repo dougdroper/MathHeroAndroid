@@ -1,13 +1,14 @@
 $(document).ready(function(){
   var timer;
   var timer_is_on = true;
+  var next_question;
 
   var GameRandomGenerator = {
     randomNumber: function(){
       return Math.round(Math.random(10) * 10);
     },
     randomOperator: function(){
-      var val = this.getRandomNumber();
+      var val = this.randomNumber();
       switch(true){
         case (val < 4):
           return "+";
@@ -25,16 +26,33 @@ $(document).ready(function(){
     }
   };
 
-  function Question(options){
-    this.left = options["left"];
-    this.operation = options["operation"];
-    this.right = options["right"];
-    this.answer = eval(this.left + this.operation + this.right)
+  var Question = function(){
+    var left_term = GameRandomGenerator.randomNumber();
+    var operation = GameRandomGenerator.randomOperator();
+    var right_term = GameRandomGenerator.randomNumber();
+    $("#left_term").html(left_term);
+    $("#operation").html(operation);
+    $("#right_term").html(right_term);
+    this.answer = function(){
+      return eval(left_term + operation + right_term)
+    }
   };
 
+  var reachedDeadLine = function(){
+    clearTimeout(timer);
+    timer_is_on = false;
+  };
 
   var movedown = function(){
-    $("#calc_box").css('top', (parseInt($("#calc_box").css('top'), 10) + 5));
+    var calc_box = $("#calc_box");
+    var calc_box_top = parseInt($("#calc_box").css("top"), 10);
+    var dead_line = $("#dead_line").offset().top;
+
+    if(calc_box_top + 58 <= dead_line){
+      calc_box.css('top', calc_box_top + 5);  
+    } else {
+      reachedDeadLine();
+    }
   };
 
   var startTimer = function(){
@@ -44,14 +62,18 @@ $(document).ready(function(){
     }
   };
 
-  var generateQuestion = function(){
-    options = {
-      left: GameRandomGenerator.randomNumber(),
-      operation: GameRandomGenerator.randomOperator(),
-      right: GameRandomGenerator.randomNumber(),
-    }
+  var generateAnswers = function(){
+    var answer = next_question.answer()
+    $("#answer_1").html(answer);
+    $("#answer_2").html(answer - 1);
+    $("#answer_3").html(answer + 1);
+    $("#answer_4").html(answer * 2);
+  };
 
-    var q = new Question(options)
+  var generateQuestion = function(){
+    next_question = new Question();
+    generateAnswers();
+    $("#calc_box").css('top', 0);
   };
 
   var startGame = function(){
@@ -78,6 +100,12 @@ $(document).ready(function(){
     }
   });
 
-
+  $("#answer_1").click(function(e){
+    e.preventDefault()
+    if(parseInt($(this).html(), 10) === next_question.answer()){
+      generateQuestion();
+    }
+    return false;
+  });
 
 });
