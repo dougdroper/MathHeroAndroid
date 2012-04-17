@@ -2,27 +2,36 @@ $(document).ready(function(){
   var timer;
   var timer_is_on = true;
 
-  var getRandomNumber = function(){
-    return Math.round(Math.random(10) * 10);
-  };
-
-  var getRandomOperator = function(){
-    var val = getRandomNumber();
-    switch(true){
-      case (val < 4):
-        return "+";
-        break;
-      case (val >= 4 && val < 6):
-        return "*";
-        break;
-      case (val >= 6 && val < 8):
-        return "/";
-        break;
-      default:
-        return "-";
-        break;
+  var GameRandomGenerator = {
+    randomNumber: function(){
+      return Math.round(Math.random(10) * 10);
+    },
+    randomOperator: function(){
+      var val = this.getRandomNumber();
+      switch(true){
+        case (val < 4):
+          return "+";
+          break;
+        case (val >= 4 && val < 6):
+          return "*";
+          break;
+        case (val >= 6 && val < 8):
+          return "/";
+          break;
+        default:
+          return "-";
+          break;
+      }
     }
   };
+
+  function Question(options){
+    this.left = options["left"];
+    this.operation = options["operation"];
+    this.right = options["right"];
+    this.answer = eval(this.left + this.operation + this.right)
+  };
+
 
   var movedown = function(){
     $("#calc_box").css('top', (parseInt($("#calc_box").css('top'), 10) + 5));
@@ -35,10 +44,14 @@ $(document).ready(function(){
     }
   };
 
-  var populate_sum = function(){
-    $("#right_term").html(getRandomNumber());
-    $("#operation").html(getRandomOperator());
-    $("#left_term").html(getRandomNumber());
+  var generateQuestion = function(){
+    options = {
+      left: GameRandomGenerator.randomNumber(),
+      operation: GameRandomGenerator.randomOperator(),
+      right: GameRandomGenerator.randomNumber(),
+    }
+
+    var q = new Question(options)
   };
 
   var startGame = function(){
@@ -48,7 +61,7 @@ $(document).ready(function(){
   }
 
   $("#start_button").click(function(){
-    populate_sum();
+    generateQuestion();
     clearTimeout(timer);
     $("#calc_box").css('top', 0);
     startGame();
@@ -64,5 +77,7 @@ $(document).ready(function(){
       startGame();
     }
   });
+
+
 
 });
