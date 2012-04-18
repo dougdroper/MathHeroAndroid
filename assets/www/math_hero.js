@@ -23,19 +23,30 @@ $(document).ready(function(){
           return "-";
           break;
       }
+    },
+    randomQuestion: function() {
+      var options = {
+        left_term: GameRandomGenerator.randomNumber(),
+        operation: GameRandomGenerator.randomOperator(),
+        right_term: GameRandomGenerator.randomNumber(),
+        answer: function(){
+          return eval(this.left_term + this.operation + this.right_term);
+        }
+      };
+
+      if(options.answer() % 1 !== 0 || options.answer() < 0){
+        return GameRandomGenerator.randomQuestion();
+      } else {
+        return new Question(options)
+      }
     }
   };
 
-  var Question = function(){
-    var left_term = GameRandomGenerator.randomNumber();
-    var operation = GameRandomGenerator.randomOperator();
-    var right_term = GameRandomGenerator.randomNumber();
-    $("#left_term").html(left_term);
-    $("#operation").html(operation);
-    $("#right_term").html(right_term);
-    this.answer = function(){
-      return eval(left_term + operation + right_term)
-    }
+  var Question = function(options){
+    $("#left_term").html(options.left_term)
+    $("#operation").html(options.operation);
+    $("#right_term").html(options.right_term);
+    this.answer = options.answer();
   };
 
   var reachedDeadLine = function(){
@@ -49,7 +60,7 @@ $(document).ready(function(){
     var dead_line = $("#dead_line").offset().top;
 
     if(calc_box_top + 58 <= dead_line){
-      calc_box.css('top', calc_box_top + 5);  
+      calc_box.css('top', calc_box_top + 5);
     } else {
       reachedDeadLine();
     }
@@ -63,7 +74,7 @@ $(document).ready(function(){
   };
 
   var generateAnswers = function(){
-    var answer = next_question.answer()
+    var answer = next_question.answer
     $("#answer_1").html(answer);
     $("#answer_2").html(answer - 1);
     $("#answer_3").html(answer + 1);
@@ -71,7 +82,7 @@ $(document).ready(function(){
   };
 
   var generateQuestion = function(){
-    next_question = new Question();
+    next_question = GameRandomGenerator.randomQuestion();
     generateAnswers();
     $("#calc_box").css('top', 0);
   };
@@ -102,7 +113,7 @@ $(document).ready(function(){
 
   $("#answer_1").click(function(e){
     e.preventDefault()
-    if(parseInt($(this).html(), 10) === next_question.answer()){
+    if(parseInt($(this).html(), 10) === next_question.answer){
       generateQuestion();
     }
     return false;
