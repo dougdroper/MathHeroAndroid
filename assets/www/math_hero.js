@@ -5,7 +5,7 @@ $(document).ready(function(){
 
   var GameRandomGenerator = {
     randomNumber: function(){
-      return Math.round(Math.random(10) * 10);
+      return Math.round(Math.random(12) * 12);
     },
     randomOperator: function(){
       var val = this.randomNumber();
@@ -13,10 +13,10 @@ $(document).ready(function(){
         case (val < 4):
           return "+";
           break;
-        case (val >= 4 && val < 6):
+        case (val >= 4 && val <= 6):
           return "*";
           break;
-        case (val >= 6 && val < 8):
+        case (val > 6 && val <= 9):
           return "/";
           break;
         default:
@@ -26,27 +26,39 @@ $(document).ready(function(){
     },
     randomQuestion: function() {
       var options = {
-        left_term: GameRandomGenerator.randomNumber(),
-        operation: GameRandomGenerator.randomOperator(),
-        right_term: GameRandomGenerator.randomNumber(),
+        left_term: this.randomNumber(),
+        operation: this.randomOperator(),
+        right_term: this.randomNumber(),
         answer: function(){
           return eval(this.left_term + this.operation + this.right_term);
         }
       };
 
       if(options.answer() % 1 !== 0 || options.answer() < 0){
-        return GameRandomGenerator.randomQuestion();
+        return this.randomQuestion();
       } else {
         return new Question(options)
       }
     }
   };
 
-  var Question = function(options){
-    $("#left_term").html(options.left_term)
-    $("#operation").html(options.operation);
-    $("#right_term").html(options.right_term);
+
+
+  var Question = function(options) {
+
+    var formatOperation = function() {
+      if(options.operation === "*"){
+        return "x";
+      } else {
+        return options.operation;
+      }
+    };
+
     this.answer = options.answer();
+
+    $("#left_term").html(options.left_term)
+    $("#operation").html(formatOperation());
+    $("#right_term").html(options.right_term);
   };
 
   var reachedDeadLine = function(){
@@ -75,6 +87,7 @@ $(document).ready(function(){
 
   var generateAnswers = function(){
     var answer = next_question.answer
+
     $("#answer_1").html(answer);
     $("#answer_2").html(answer - 1);
     $("#answer_3").html(answer + 1);
