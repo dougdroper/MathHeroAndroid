@@ -42,7 +42,10 @@ $(document).ready(function(){
     }
   };
 
-
+  var shuffle = function(o){ //v1.0
+    for(var j, x, i = o.length; i; j = parseInt(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
+    return o;
+  };
 
   var Question = function(options) {
 
@@ -87,11 +90,12 @@ $(document).ready(function(){
 
   var generateAnswers = function(){
     var answer = next_question.answer
+    var shuffled =  shuffle([1,2,3,4]);
 
-    $("#answer_1").html(answer);
-    $("#answer_2").html(answer - 1);
-    $("#answer_3").html(answer + 1);
-    $("#answer_4").html(answer * 2);
+    $("#answer_" + shuffled.pop() ).html(answer);
+    $("#answer_" + shuffled.pop()).html(answer - 1);
+    $("#answer_" + shuffled.pop()).html(answer + 1);
+    $("#answer_" + shuffled.pop()).html(answer * 2);
   };
 
   var generateQuestion = function(){
@@ -124,7 +128,8 @@ $(document).ready(function(){
     }
   });
 
-  $("#answer_1").click(function(e){
+  $(".answers div").bind("click", function(e){
+    console.log("test")
     e.preventDefault()
     if(parseInt($(this).html(), 10) === next_question.answer){
       generateQuestion();
