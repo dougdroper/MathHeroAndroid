@@ -4,10 +4,10 @@ $(document).ready(function(){
   var next_question;
 
   var GameRandomGenerator = {
-    randomNumber: function(){
+    randomNumber: function() {
       return Math.round(Math.random(12) * 12);
     },
-    randomOperator: function(){
+    randomOperator: function() {
       var val = this.randomNumber();
       switch(true){
         case (val < 4):
@@ -23,6 +23,14 @@ $(document).ready(function(){
           return "-";
           break;
       }
+    },
+    randomAnswer: function(answer) {
+      var random_answer = Math.floor(eval(answer + this.randomOperator() + Math.random(12) * 12));
+      if (isFinite(answer) || random_answer !== answer) {
+        return random_answer;
+      } else {
+        return this.randomAnswer();
+      };
     },
     randomQuestion: function() {
       var options = {
@@ -93,15 +101,15 @@ $(document).ready(function(){
     var shuffled =  shuffle([1,2,3,4]);
 
     $("#answer_" + shuffled.pop() ).html(answer);
-    $("#answer_" + shuffled.pop()).html(answer - 1);
-    $("#answer_" + shuffled.pop()).html(answer + 1);
-    $("#answer_" + shuffled.pop()).html(answer * 2);
+    $("#answer_" + shuffled.pop()).html(GameRandomGenerator.randomAnswer(answer));
+    $("#answer_" + shuffled.pop()).html(GameRandomGenerator.randomAnswer(answer));
+    $("#answer_" + shuffled.pop()).html(GameRandomGenerator.randomAnswer(answer));
   };
 
   var generateQuestion = function(){
     next_question = GameRandomGenerator.randomQuestion();
     generateAnswers();
-    $("#calc_box").css('top', 0);
+    $("#calc_box").css('top', -20);
   };
 
   var startGame = function(){
@@ -129,7 +137,6 @@ $(document).ready(function(){
   });
 
   $(".answers div").bind("click", function(e){
-    console.log("test")
     e.preventDefault()
     if(parseInt($(this).html(), 10) === next_question.answer){
       generateQuestion();
