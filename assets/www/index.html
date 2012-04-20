@@ -5,23 +5,25 @@
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>
         </title>
-        <link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.css" />
-        <link rel="stylesheet" href="style.css" />
+        <link rel="stylesheet" href="stylesheets/jquery.mobile-1.1.0.min.css" />
+        <link rel="stylesheet" href="stylesheets/style.css" />
         <style>
             /* App custom styles */
         </style>
-        <script type="text/javascript" charset="utf-8" src="cordova-1.6.0.js"></script>
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-        <script src="http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.js"></script>
-        <script type="text/javascript" charset="utf-8" src="math_hero.js"></script>
+        <script type="text/javascript" charset="utf-8" src="javascript/cordova-1.6.0.js"></script>
+        <script src="javascript/jquery.min.js"></script>
+        <script src="javascript/jquery.mobile-1.1.0.min.js"></script>
+        <script type="text/javascript" charset="utf-8" src="javascript/math_hero.js"></script>
     </head>
     <body>
         <div data-role="page" id="page1">
             <div data-theme="a" data-role="header">
                 <h3>Math Hero</h3>
                 <a data-role="button" data-transition="fade" href="#page1" id="start_button">New Game</a>
-                <a data-role="button" data-transition="fade" href="#page1" id="pause_button">Pause</a>
+                <a data-role="button" data-rel="dialog" href="#popup" id="pause_button">Pause</a>
             </div>
+            <div id="score">Score</div>
+            <div id="clock">Time</div>
             <div data-role="content">
                 <div id="calc_box">
                   <div id="left_term"></div>
@@ -30,14 +32,29 @@
                 </div>
                 <div id="dead_line"></div>
                 <div class="answers">
-                  <div id="answer_1"></div>
-                  <div id="answer_2"></div>
-                  <div id="answer_3"></div>
-                  <div id="answer_4"></div>
+                    <a href="#" data-role="button" id="answer_0" data-theme="b"></a>
+                    <a href="#" data-role="button" id="answer_1" data-theme="b"></a>
+                    <a href="#" data-role="button" id="answer_2" data-theme="b"></a>
+                    <a href="#" data-role="button" id="answer_3" data-theme="b"></a>
                 </div>
             </div>
         </div>
-        <script>
-        </script>
+        <div  id="popup">
+            <div data-theme="a" data-role="header">
+                <h3>Pause</h3>
+            </div>
+            <div data-role="content">
+                <p>Close box to continue</p>
+            </div>
+        </div>
+        <div data-role="page" id="score_page">
+            <div data-theme="a" data-role="header">
+                <h3>Score</h3>
+                <a data-role="button" data-transition="fade" href="#page1" id="start_button">New Game</a>
+            </div>
+            <div data-role="content">
+                <p>score</p>
+            </div>
+        </div>
     </body>
 </html>
