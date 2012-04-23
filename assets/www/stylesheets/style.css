@@ -77,10 +77,14 @@
   color: red;
 }
 
-#score{
+.score{
   position: absolute;
   top: 45px;
   left: 24px;
   font-size: 40px;
   color: green;
+}
+
+#score_page .score {
+  display: none;
 }

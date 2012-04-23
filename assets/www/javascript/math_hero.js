@@ -1,11 +1,15 @@
 $(document).ready(function(){
+
   var timer,
       timer_is_on = true,
       next_question,
       NUMBER_OF_ANSWERS = 4,
       CLOCKCOUNT = 30,
       clock = CLOCKCOUNT,
-      score = 0;
+      score = 0,
+      questions_with_answers = [],
+      question_index = 0;
+      
 
   var GameRandomGenerator = {
     randomNumber: function(){
@@ -40,6 +44,7 @@ $(document).ready(function(){
       return sum;
     },
     randomAnswersFor: function(answer) {
+
       var answers = [answer];
       var generateAnswer = function() {
         var random_answer = Math.floor(GameRandomGenerator.randomSum().answer);
@@ -68,6 +73,8 @@ $(document).ready(function(){
         var suffled_answers = shuffle(answers),
             index = 0;
         return {
+          answers: suffled_answers,
+
           next: function() {
             index += 1;
           },
@@ -88,7 +95,7 @@ $(document).ready(function(){
       if(options.answer % 1 !== 0 || options.answer < 0){
         return this.randomQuestion();
       } else {
-        return new Question(options)
+        return options;
       }
     }
   };
@@ -126,7 +133,8 @@ $(document).ready(function(){
   };
 
   var endGame = function(){
-    $.mobile.changePage( "#score_page", { transition: "slidedown"} );
+    $("#score_page .score").show();
+    $.mobile.changePage( "#score_page", {transition: 'pop', role: 'dialog'});
   };
 
   var updateClock = function(time) {
@@ -147,7 +155,10 @@ $(document).ready(function(){
   };
 
   var generateAnswers = function(){
-    var answers = GameRandomGenerator.randomAnswersFor(next_question.answer)
+    
+    var answers = questions_with_answers[question_index].a
+    
+
     for(var i = 0; i < NUMBER_OF_ANSWERS; i += 1) {
       $("#answer_" + answers.currentIndex()).html(answers.current());
       answers.next();
@@ -155,8 +166,17 @@ $(document).ready(function(){
   };
 
   var generateQuestion = function(){
-    next_question = GameRandomGenerator.randomQuestion();
+    for(var i = 0; i < 40; i += 1){
+      var question = GameRandomGenerator.randomQuestion();
+      var answers = GameRandomGenerator.randomAnswersFor(question.answer);
+      questions_with_answers.push({q: question, a : answers})
+    }
+
+    
+    next_question = questions_with_answers[question_index].q
+    new Question(next_question);
     generateAnswers();
+
     $("#calc_box").css('top', -20);
   };
 
@@ -171,7 +191,7 @@ $(document).ready(function(){
   }
 
   var updateScore = function(){
-    $("#score").html(score);
+    $(".score").html(score);
   };
 
   $("#start_button").click(function(){
@@ -196,6 +216,7 @@ $(document).ready(function(){
   $(".answers a").bind("click", function(e){
     e.preventDefault()
     if(parseInt($(this).html(), 10) === next_question.answer){
+      question_index += 1;
       score = score + 10 + (1000 - parseInt($("#calc_box").css("top"), 10))
       updateScore();
       generateQuestion();
