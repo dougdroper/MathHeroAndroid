@@ -1,15 +1,45 @@
 $(document).ready(function(){
 
-  var timer,
-      timer_is_on = true,
-      next_question,
-      NUMBER_OF_ANSWERS = 4,
-      CLOCKCOUNT = 30,
-      clock = CLOCKCOUNT,
-      score = 0,
-      questions_with_answers = [],
-      question_index = 0;
-      
+  var CLOCKCOUNT = 30;
+  var NUMBER_OF_ANSWERS = 4;
+  var game;
+  var game_timer;
+  var clock_timer;
+
+  var QuestionGenerator = function () {
+    var questions_with_answers = [], i;
+    for(i = 0; i < 50; i += 1){
+      var rand_question = GameRandomGenerator.randomQuestion();
+      questions_with_answers.push({
+        question: rand_question,
+        answers : GameRandomGenerator.randomAnswersFor(rand_question.answer)
+      });
+    }
+    return questions_with_answers;
+  };
+
+  var ViewReset = function () {
+    $("#calc_box").css('top', -20);
+    $(".score").html("0");
+  }
+
+  var Game = function(){
+    var questions_and_answers = QuestionGenerator();
+    var that = this;
+    ViewReset();
+    this.question_index = 0;
+    this.timer_is_on = true;
+    this.clock = CLOCKCOUNT;
+    this.score = 0;
+
+    this.nextQuestion = function () {
+      return new Question(questions_and_answers[that.question_index].question);
+    }
+
+    this.nextSetOfAnswers = function () {
+      drawNextSetOfAnswers(questions_and_answers[that.question_index].answers);
+    }
+  };
 
   var GameRandomGenerator = {
     randomNumber: function(){
@@ -102,20 +132,27 @@ $(document).ready(function(){
 
   var Question = function(options) {
     this.answer = options.answer;
-
+    $("#calc_box").css("top", -22);
     $("#left_term").html(options.left_term)
     $("#operation").html(options.operator);
     $("#right_term").html(options.right_term);
   };
 
+  var drawNextSetOfAnswers = function(answers){
+    for(var i = 0; i < NUMBER_OF_ANSWERS; i += 1) {
+      $("#answer_" + answers.currentIndex()).html(answers.current());
+      answers.next();
+    }
+  };
+
   var reachedDeadLine = function(){
-    clearTimeout(timer);
-    timer_is_on = false;
+    clearTimeout(game.timer);
+    game.timer_is_on = false;
   };
 
   var movedown = function(){
     var calc_box = $("#calc_box");
-    var calc_box_top = parseInt($("#calc_box").css("top"), 10);
+    var calc_box_top = parseInt(calc_box.css("top"), 10);
     var dead_line = $("#dead_line").offset().top;
 
     if(calc_box_top + 58 <= dead_line){
@@ -127,12 +164,13 @@ $(document).ready(function(){
 
   var startTimer = function(){
     movedown();
-    if(timer_is_on){
-      timer = setTimeout(startTimer, 100);
+    if(game.timer_is_on){
+      game.timer = setTimeout(startTimer, 100);
     }
   };
 
   var endGame = function(){
+    clearTimeout(game.clock_timer);
     $("#score_page .score").show();
     $.mobile.changePage( "#score_page", {transition: 'pop', role: 'dialog'});
   };
@@ -142,71 +180,46 @@ $(document).ready(function(){
   };
 
   var countDown = function(){
-    updateClock(clock);
-    clock = clock - 1;
-    if(clock < 0) {
-      timer_is_on = false;
+    updateClock(game.clock);
+    game.clock = game.clock - 1;
+
+    if(game.clock < 0) {
+      game.timer_is_on = false;
+      clearTimeout(game.clock_timer);
       endGame();
     }
 
-    if(timer_is_on){
-      timer = setTimeout(countDown, 1000);
+    if(game.timer_is_on){
+      game.clock_timer = setTimeout(countDown, 1000);
     }
   };
 
-  var generateAnswers = function(){
-    
-    var answers = questions_with_answers[question_index].a
-    
-
-    for(var i = 0; i < NUMBER_OF_ANSWERS; i += 1) {
-      $("#answer_" + answers.currentIndex()).html(answers.current());
-      answers.next();
-    }
-  };
-
-  var generateQuestion = function(){
-    for(var i = 0; i < 40; i += 1){
-      var question = GameRandomGenerator.randomQuestion();
-      var answers = GameRandomGenerator.randomAnswersFor(question.answer);
-      questions_with_answers.push({q: question, a : answers})
-    }
-
-    
-    next_question = questions_with_answers[question_index].q
-    new Question(next_question);
-    generateAnswers();
-
-    $("#calc_box").css('top', -20);
-  };
-
-  var startGame = function(){
-    timer_is_on = true;
-    clock = CLOCKCOUNT;
-    score = 0;
-    updateScore();
-    $("#pause_button").find(".ui-btn-text").html("Pause");
+  var newGame = function(){
+    game = new Game();
+    clearTimeout(game.timer);
+    clearTimeout(game.clock_timer);
+    game.timer_is_on = true;
+    game.nextQuestion();
+    game.nextSetOfAnswers();
     startTimer();
     countDown();
+
+    $("#pause_button").find(".ui-btn-text").html("Pause");
   }
 
   var updateScore = function(){
-    $(".score").html(score);
+    $(".score").html(game.score);
   };
 
-  $("#start_button").click(function(){
-    generateQuestion();
-    $(".answers").show();
-    clearTimeout(timer);
-    $("#calc_box").css('top', 0);
-    startGame();
+  $(".new_game").click(function(){
+    newGame();
   });
 
   $("#pause_button").click(function(){
     var btn = $("#pause_button").find(".ui-btn-text");
     if(btn.html() === "Pause"){
-      timer_is_on = false;
-      clearTimeout(timer);
+      game.timer_is_on = false;
+      clearTimeout(game.timer);
       btn.html("Continue");
     } else {
       startGame();
@@ -215,11 +228,12 @@ $(document).ready(function(){
 
   $(".answers a").bind("click", function(e){
     e.preventDefault()
-    if(parseInt($(this).html(), 10) === next_question.answer){
-      question_index += 1;
-      score = score + 10 + (1000 - parseInt($("#calc_box").css("top"), 10))
+    if(parseInt($(this).html(), 10) === game.nextQuestion().answer){
+      game.question_index += 1;
+      game.score = game.score + 10 + (1000 - parseInt($("#calc_box").css("top"), 10))
       updateScore();
-      generateQuestion();
+      game.nextQuestion();
+      game.nextSetOfAnswers();
     }
     return false;
   });
