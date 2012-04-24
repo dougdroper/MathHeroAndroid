@@ -1,4 +1,4 @@
-$(document).ready(function(){
+$(document).bind('pageinit', function(){
 
   var CLOCKCOUNT = 30;
   var NUMBER_OF_ANSWERS = 4;
@@ -146,7 +146,8 @@ $(document).ready(function(){
   };
 
   var reachedDeadLine = function(){
-    clearTimeout(game.timer);
+    clearTimeout(game_timer);
+    clearTimeout(clock_timer);
     game.timer_is_on = false;
   };
 
@@ -165,12 +166,14 @@ $(document).ready(function(){
   var startTimer = function(){
     movedown();
     if(game.timer_is_on){
-      game.timer = setTimeout(startTimer, 100);
+      game_timer = setTimeout(startTimer, 100);
     }
   };
 
   var endGame = function(){
-    clearTimeout(game.clock_timer);
+    clearTimeout(game_timer);
+    clearTimeout(clock_timer);
+    game.timer_is_on = false;
     $("#score_page .score").show();
     $.mobile.changePage( "#score_page", {transition: 'pop', role: 'dialog'});
   };
@@ -185,26 +188,24 @@ $(document).ready(function(){
 
     if(game.clock < 0) {
       game.timer_is_on = false;
-      clearTimeout(game.clock_timer);
+      clearTimeout(clock_timer);
       endGame();
     }
 
     if(game.timer_is_on){
-      game.clock_timer = setTimeout(countDown, 1000);
+      clock_timer = setTimeout(countDown, 1000);
     }
   };
 
   var newGame = function(){
+    clearTimeout(game_timer);
+    clearTimeout(clock_timer);
     game = new Game();
-    clearTimeout(game.timer);
-    clearTimeout(game.clock_timer);
     game.timer_is_on = true;
     game.nextQuestion();
     game.nextSetOfAnswers();
     startTimer();
     countDown();
-
-    $("#pause_button").find(".ui-btn-text").html("Pause");
   }
 
   var updateScore = function(){
@@ -215,18 +216,22 @@ $(document).ready(function(){
     newGame();
   });
 
+  var showPauseOverlay = function(){
+    clearTimeout(game_timer);
+    clearTimeout(clock_timer);
+    $("#modal_overlay").fadeIn(100);
+  };
+
   $("#pause_button").click(function(){
-    var btn = $("#pause_button").find(".ui-btn-text");
-    if(btn.html() === "Pause"){
-      game.timer_is_on = false;
-      clearTimeout(game.timer);
-      btn.html("Continue");
-    } else {
-      startGame();
-    }
+    showPauseOverlay();
   });
 
-  $(".answers a").bind("click", function(e){
+  $("#pause .ui-icon-delete").click(function(){
+    countDown();
+    startTimer();
+  });
+
+  $(".answers a").bind("vclick", function(e){
     e.preventDefault()
     if(parseInt($(this).html(), 10) === game.nextQuestion().answer){
       game.question_index += 1;
