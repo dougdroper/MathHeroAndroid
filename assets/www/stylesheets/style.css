@@ -78,19 +78,19 @@
 }
 
 .score{
-  position: absolute;
   top: 45px;
   left: 24px;
   font-size: 40px;
   color: green;
+  padding-left: 10px;
 }
 
 #score_page .score {
   display: none;
 }
 
-#pause #pause_text{
-  text-align:center;
+#pause_button{
+  display: none;
 }
 
 #modal_overlay{

@@ -13,6 +13,9 @@
         <script type="text/javascript" charset="utf-8" src="javascript/cordova-1.6.0.js"></script>
         <script src="javascript/jquery.min.js"></script>
         <script src="javascript/jquery.mobile-1.1.0.min.js"></script>
+        
+        <script type="text/javascript" charset="utf-8" src="javascript/math_clock.js"></script>
+        <script type="text/javascript" charset="utf-8" src="javascript/math_questions.js"></script>
         <script type="text/javascript" charset="utf-8" src="javascript/math_hero.js"></script>
     </head>
     <body>
@@ -38,9 +41,37 @@
                     <a href="#" data-role="button" id="answer_3" data-theme="b"></a>
                 </div>
                 <div id="modal_overlay">
-                    <div></div>
+                  <div id="pause" data-role="dialog" data-url="pause" tabindex="0" class="ui-page ui-body-c ui-dialog ui-overlay-a ui-page-active" style="min-height: 388px; ">
+                    <div role="dialog" class="ui-dialog-contain ui-corner-all ui-overlay-shadow">
+                    <div data-theme="a" data-role="header" class="ui-corner-top ui-header ui-bar-a" role="banner">
+                      <a href="#" data-icon="delete" data-iconpos="notext" class="ui-btn-left ui-btn ui-btn-up-a ui-shadow ui-btn-corner-all ui-btn-icon-notext" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" data-theme="a" title="Close">
+                      <span class="ui-btn-inner ui-btn-corner-all">
+                        <span class="ui-btn-text">Close</span>
+                        <span class="ui-icon ui-icon-delete ui-icon-shadow">&nbsp;</span>
+                      </span>
+                    </a>
+                    <h3 class="ui-title" role="heading" aria-level="1">Pause</h3>
+                  </div>
+                  <div data-role="content" class="ui-corner-bottom ui-content ui-body-c" role="main">
+                  <a data-role="button" data-rel="dialog" href="#pause" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" data-theme="c" class="ui-btn ui-btn-up-c ui-shadow ui-btn-corner-all">
+                    <span class="ui-btn-inner ui-btn-corner-all">
+                      <span class="ui-btn-text" id="continue">Continue</span>
+                    </span>
+                  </a>
                 </div>
+              </div>
             </div>
+          </div>
         </div>
-    </body>
+      </div>
+
+      <div data-role="page" id="score_page">
+        <div data-theme="a" data-role="header">
+          <h3>Your Score</h3>
+        </div>
+        <div data-role="content">
+          <div class="score">Score</div>            
+        </div>
+      </div>      
+  </body>
 </html>
